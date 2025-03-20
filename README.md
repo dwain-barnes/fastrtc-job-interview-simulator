@@ -149,7 +149,7 @@ The application will be available at `http://localhost:7860`
 ## Tech Stack
 
 - **Backend**: FastAPI, Python
-- **Voice Processing**: WebRTC, SileroVAD
+- **Voice Processing**: FastRTC
 - **AI/ML**: OpenAI, Custom prompt engineering, Ollama
 - **Frontend**: HTML/CSS/JavaScript
 - **Audio**: Speech-to-Text and Text-to-Speech APIs
