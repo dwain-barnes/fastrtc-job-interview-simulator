@@ -1,11 +1,11 @@
-# Job Interview Simulator
+# FastRTC Job Interview Simulator
 
 <p align="center">
   <img src="https://placeholder-for-logo.com/job-interview-simulator-logo.png" alt="Job Interview Simulator Logo" width="200"/>
 </p>
 
 <p align="center">
-  A FastRTC-powered job interview simulator with real-time voice interaction that helps job seekers practice and improve their interview skills. The application uses AI to create realistic interview scenarios based on specific job descriptions, with the AI playing the role of the interviewer. Users engage in natural voice conversations, receive immediate responses, and get detailed performance feedback after each session. With customisable difficulty levels and industry-specific questions, this tool provides a risk-free environment to build confidence and refine responses before real interviews.
+  A FastRTC-powered job interview simulator with real-time voice interaction that helps job seekers practice and improve their interview skills. The application uses LLM's to create realistic interview scenarios based on specific job descriptions, with the AI playing the role of the interviewer. Users engage in natural voice conversations, receive immediate responses, and get detailed performance feedback after each session. With customisable difficulty levels and industry-specific questions, this tool provides a risk-free environment to build confidence and refine responses before real interviews. This can be run localy using Ollama, kokoro and local whisper.
 </p>
 
 <p align="center">
@@ -51,7 +51,10 @@ Job Interview Simulator uses WebRTC for real-time voice communication and AI lan
 ### Prerequisites
 
 - Python 3.10+
-
+- For Local use:
+- Ollama
+- Kokoro TTS
+- Local Whisper
 ### Clone and Install
 
 ```bash
