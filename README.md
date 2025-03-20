@@ -1,4 +1,4 @@
-# FastRTC Job Interview Simulator
+# FastRTC Job Interview Simulator (Alpha)
 
 <p align="center">
   <img src="https://placeholder-for-logo.com/job-interview-simulator-logo.png" alt="Job Interview Simulator Logo" width="200"/>
