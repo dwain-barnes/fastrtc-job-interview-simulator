@@ -1,1 +1,56 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Interview Briefing - Interview Simulator</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Job Interview Briefing</h1>
+        
+        <div class="job-details">
+            <div class="position-badge">
+                Position: {{ position }}
+            </div>
+            
+            <div class="difficulty-badge">
+                Interview Level: {{ difficulty|capitalize }}
+            </div>
+        </div>
+        
+        <div class="briefing-container">
+            {{ briefing|safe }}
+        </div>
+        
+        <div class="preparation-tips">
+            <h3>Interview Preparation Tips</h3>
+            <ul>
+                <li>Research the company thoroughly before the actual interview</li>
+                <li>Prepare specific examples from your experience that demonstrate key skills</li>
+                <li>Practice your responses to common interview questions</li>
+                <li>Prepare thoughtful questions to ask the interviewer</li>
+                <li>Focus on clear communication and positive body language</li>
+            </ul>
+        </div>
+        
+        <div class="controls">
+            <a href="/interview?webrtc_id={{ webrtc_id }}" class="btn">Start Interview</a>
+            <a href="/" class="btn">Create Another Interview</a>
+        </div>
+        
+        <div class="instructions">
+            <h3>Simulator Instructions</h3>
+            <ul>
+                <li>Click "Start Interview" when you're ready to begin</li>
+                <li>The AI interviewer will introduce themselves and ask questions</li>
+                <li>Speak clearly into your microphone to respond to questions</li>
+                <li>The interview will follow a natural conversation flow</li>
+                <li>Click "Finish Interview" when the interview is complete</li>
+                <li>You'll receive feedback and a score based on your performance</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dwain's FastRTC Job Interview Simulator</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Job Interview Simulator</h1>
+        <p>Enter your job description below and set up your practice interview session.</p>
+        
+        <div class="form-container">
+            <form action="/generate" method="post">
+                <div class="form-group">
+                    <label for="job_description">Job Description:</label>
+                    <textarea name="job_description" id="job_description" rows="8" placeholder="Paste the job description here or describe the role you're applying for..." required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="position_title">Position Title:</label>
+                    <input type="text" name="position_title" id="position_title" placeholder="e.g. Software Engineer, Marketing Manager" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="industry">Industry:</label>
+                    <select name="industry" id="industry" required>
+                        <option value="technology">Technology</option>
+                        <option value="healthcare">Healthcare</option>
+                        <option value="finance">Finance</option>
+                        <option value="education">Education</option>
+                        <option value="retail">Retail</option>
+                        <option value="manufacturing">Manufacturing</option>
+                        <option value="hospitality">Hospitality</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="difficulty">Interview Difficulty Level:</label>
+                    <select name="difficulty" id="difficulty" required>
+                        <option value="easy">Easy (Basic Questions)</option>
+                        <option value="medium" selected>Medium (Standard Interview)</option>
+                        <option value="hard">Hard (Challenging Questions)</option>
+                        <option value="expert">Expert (Stress Interview)</option>
+                    </select>
+                    
+                    <div class="difficulty-help">
+                        <h3>Difficulty Levels</h3>
+                        <div class="difficulty-item">
+                            <span class="difficulty-name">Easy:</span> Beginner-friendly questions, supportive interviewer
+                        </div>
+                        <div class="difficulty-item">
+                            <span class="difficulty-name">Medium:</span> Standard professional interview questions
+                        </div>
+                        <div class="difficulty-item">
+                            <span class="difficulty-name">Hard:</span> Challenging technical/behavioral questions
+                        </div>
+                        <div class="difficulty-item">
+                            <span class="difficulty-name">Expert:</span> High-pressure questions, interruptions, stress testing
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="technical" name="technical">
+                        <label for="technical">Include Technical Questions</label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="behavioral" name="behavioral" checked>
+                        <label for="behavioral">Include Behavioral Questions</label>
+                    </div>
+                </div>
+                
+                <button type="submit">Generate Interview</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

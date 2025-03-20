@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Interview Session</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f5f7fa;
+            color: #2c3e50;
+            margin: 0;
+            padding: 20px;
+            height: 100vh;
+            box-sizing: border-box;
+        }
+    
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            height: calc(100% - 100px);
+            margin-bottom: 20px;
+        }
+    
+        h1, h2, h3 {
+            text-align: center;
+            color: #1a3a5f;
+            margin-top: 0;
+            font-weight: 600;
+        }
+    
+        .chat-container {
+            border: 1px solid #d1d8e0;
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            box-sizing: border-box;
+            background-color: #ffffff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+    
+        .controls-container {
+            border: 1px solid #d1d8e0;
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            height: 128px;
+            box-sizing: border-box;
+            background-color: #ffffff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+    
+        .visualization-container {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+        }
+    
+        .box-container {
+            display: flex;
+            justify-content: space-between;
+            height: 64px;
+            width: 100%;
+        }
+    
+        .box {
+            height: 100%;
+            width: 8px;
+            background: #4a90e2;
+            border-radius: 8px;
+            transition: transform 0.05s ease;
+        }
+    
+        .chat-messages {
+            flex-grow: 1;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #e6e9ed;
+            border-radius: 6px;
+            background-color: #f9fafc;
+        }
+    
+        .message {
+            margin-bottom: 10px;
+            padding: 12px;
+            border-radius: 6px;
+            position: relative;
+            max-width: 85%;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+    
+        .message.user {
+            background-color: #e2f0fd;
+            border-left: 3px solid #4a90e2;
+            margin-left: auto;
+            color: #2c3e50;
+        }
+    
+        .message.assistant {
+            background-color: #f1f8ff;
+            border-left: 3px solid #1a3a5f;
+            margin-right: auto;
+            color: #2c3e50;
+        }
+    
+        button {
+            height: 64px;
+            min-width: 120px;
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 20px;
+            font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+    
+        button:hover {
+            background-color: #3879c7;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+    
+        #audio-output {
+            display: none;
+        }
+    
+        .icon-with-spinner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            min-width: 180px;
+        }
+    
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ffffff;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            flex-shrink: 0;
+        }
+    
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    
+        .pulse-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            min-width: 180px;
+        }
+    
+        .pulse-circle {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #4a90e2;
+            opacity: 0.3;
+            flex-shrink: 0;
+            transform: translateX(-0%) scale(var(--audio-level, 1));
+            transition: transform 0.1s ease;
+        }
+    
+        .typing-indicator {
+            padding: 12px;
+            background-color: #f1f8ff;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            display: none;
+            width: fit-content;
+        }
+    
+        .dots {
+            display: inline-flex;
+            gap: 4px;
+        }
+    
+        .dot {
+            width: 8px;
+            height: 8px;
+            background-color: #4a90e2;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+            opacity: 0.5;
+        }
+    
+        .dot:nth-child(2) {
+            animation-delay: 0.5s;
+        }
+    
+        .dot:nth-child(3) {
+            animation-delay: 1s;
+        }
+    
+        @keyframes pulse {
+            0%,
+            100% {
+                opacity: 0.5;
+                transform: scale(1);
+            }
+    
+            50% {
+                opacity: 1;
+                transform: scale(1.2);
+            }
+        }
+    
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 16px 24px;
+            border-radius: 6px;
+            font-size: 14px;
+            z-index: 1000;
+            display: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+    
+        .toast.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+    
+        .toast.warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .results-container {
+            border: 1px solid #d1d8e0;
+            border-radius: 8px;
+            padding: 25px;
+            margin-top: 20px;
+            display: none;
+            background-color: #ffffff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .score-display {
+            text-align: center;
+            font-size: 24px;
+            margin: 20px 0;
+            color: #1a3a5f;
+        }
+        
+        .score-value {
+            font-size: 48px;
+            display: block;
+            margin: 10px 0;
+            color: #4a90e2;
+            font-weight: 700;
+        }
+        
+        .transcript {
+            border: 1px solid #e6e9ed;
+            border-radius: 6px;
+            padding: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 20px;
+            white-space: pre-wrap;
+            background-color: #f9fafc;
+            color: #2c3e50;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 25px;
+        }
+        
+        .nav-button {
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 12px 24px;
+            text-decoration: none;
+            font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s ease;
+        }
+        
+        .nav-button:hover {
+            background-color: #3879c7;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        .start-prompt {
+            background-color: #f1f8ff;
+            border-left: 4px solid #4a90e2;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            text-align: center;
+            color: #1a3a5f;
+            font-weight: 500;
+        }
+    
+        /* Form styles for index page */
+        .form-container {
+            border: 1px solid #d1d8e0;
+            border-radius: 8px;
+            padding: 25px;
+            background-color: #ffffff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+    
+        .form-group {
+            margin-bottom: 20px;
+        }
+    
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #1a3a5f;
+        }
+    
+        select, input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d8e0;
+            border-radius: 6px;
+            font-size: 16px;
+            color: #2c3e50;
+            background-color: #f9fafc;
+            transition: border-color 0.2s ease;
+        }
+    
+        select:focus, input[type="text"]:focus {
+            border-color: #4a90e2;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+        }
+    
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+    
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            border: 1px solid #d1d8e0;
+            border-radius: 3px;
+        }
+    
+        /* Briefing page styles */
+        .briefing-container {
+            border: 1px solid #d1d8e0;
+            border-radius: 8px;
+            padding: 25px;
+            background-color: #ffffff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+    
+        .difficulty-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            background-color: #e2f0fd;
+            color: #1a3a5f;
+            border: 1px solid #c0d9f0;
+        }
+    
+        .instructions {
+            background-color: #f1f8ff;
+            border-left: 4px solid #4a90e2;
+            padding: 15px 20px;
+            margin-top: 25px;
+            border-radius: 6px;
+        }
+    
+        .instructions h3 {
+            text-align: left;
+            margin-top: 0;
+            margin-bottom: 12px;
+            color: #1a3a5f;
+        }
+    
+        .instructions ul {
+            padding-left: 20px;
+            margin: 0;
+        }
+    
+        .instructions li {
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+    
+        .difficulty-help {
+            background-color: #f1f8ff;
+            border-left: 4px solid #4a90e2;
+            padding: 15px;
+            margin-top: 10px;
+            border-radius: 6px;
+        }
+    
+        .difficulty-help h3 {
+            margin-top: 0;
+            text-align: left;
+            margin-bottom: 12px;
+        }
+    
+        .difficulty-item {
+            margin-bottom: 10px;
+        }
+    
+        .difficulty-name {
+            font-weight: 600;
+            color: #1a3a5f;
+        }
+    
+        /* Make the controls look more professional */
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 25px 0;
+        }
+    
+        .btn {
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 12px 24px;
+            text-decoration: none;
+            font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            display: inline-block;
+        }
+    
+        .btn:hover {
+            background-color: #3879c7;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Enhanced feedback styles */
+        .detailed-feedback {
+            margin: 20px 0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .feedback-summary {
+            background-color: #f1f8ff;
+            border-left: 4px solid #4a90e2;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+        }
+        
+        .feedback-summary h3 {
+            margin-top: 0;
+            color: #1a3a5f;
+            text-align: left;
+        }
+        
+        .feedback-strengths {
+            background-color: #e9f7ef;
+            border-left: 4px solid #2ecc71;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+        }
+        
+        .feedback-strengths h4 {
+            margin-top: 0;
+            color: #27ae60;
+            text-align: left;
+        }
+        
+        .feedback-areas {
+            margin-bottom: 20px;
+        }
+        
+        .feedback-area {
+            background-color: #f9f9f9;
+            border-left: 4px solid #7f8c8d;
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+        }
+        
+        .feedback-area h5 {
+            margin-top: 0;
+            color: #2c3e50;
+            text-align: left;
+        }
+        
+        .feedback-recommendations {
+            background-color: #f0f4f8;
+            border-left: 4px solid #3498db;
+            padding: 15px 20px;
+            border-radius: 6px;
+        }
+        
+        .feedback-recommendations h4 {
+            margin-top: 0;
+            color: #2980b9;
+            text-align: left;
+        }
+        
+        .feedback-toggle {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        
+        .toggle-button {
+            background-color: #f0f4f8;
+            color: #2c3e50;
+            border: 1px solid #d1d8e0;
+            border-radius: 4px;
+            padding: 8px 16px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .toggle-button:hover {
+            background-color: #e0e8f0;
+        }
+        
+        .transcript-container {
+            margin-top: 20px;
+        }
+        
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            
+            #results-container, #results-container * {
+                visibility: visible;
+            }
+            
+            #results-container {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+            
+            .nav-buttons {
+                display: none;
+            }
+        }
+
+        /* Job interview specific styles */
+        .position-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            margin-right: 10px;
+            background-color: #e6f7ff;
+            color: #0066cc;
+            border: 1px solid #b3d7ff;
+        }
+
+        .job-details {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .preparation-tips {
+            background-color: #f0f9eb;
+            border-left: 4px solid #67c23a;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border-radius: 6px;
+        }
+
+        .preparation-tips h3 {
+            text-align: left;
+            margin-top: 0;
+            margin-bottom: 12px;
+            color: #409843;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="error-toast" class="toast"></div>
+    <div class="container">
+        <h1>Job Interview Session</h1>
+        
+        <div class="chat-container">
+            <div id="start-prompt" class="start-prompt">
+                Click "Start" below to begin your job interview. The interviewer will ask you questions, and you can respond naturally using your microphone.
+            </div>
+            <div class="chat-messages" id="chat-messages"></div>
+            <div class="typing-indicator" id="typing-indicator">
+                <div class="dots">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="controls-container">
+            <div class="visualization-container">
+                <div class="box-container">
+                    <!-- Boxes will be dynamically added here -->
+                </div>
+            </div>
+            <button id="start-button">Start</button>
+            <button id="finish-button" style="display: none;">End Interview</button>
+        </div>
+        
+        <!-- Updated results container with detailed feedback -->
+        <div id="results-container" class="results-container">
+            <h2>Interview Feedback</h2>
+            
+            <div class="score-display">
+                Performance Score: <span id="score-value" class="score-value">0</span>/10
+            </div>
+            
+            <!-- New detailed feedback section -->
+            <div id="detailed-feedback" class="detailed-feedback">
+                <!-- This will be populated dynamically -->
+            </div>
+            
+            <div class="feedback-toggle">
+                <button id="toggle-transcript" class="toggle-button">Show Transcript</button>
+            </div>
+            
+            <div id="transcript-container" class="transcript-container" style="display: none;">
+                <h3>Interview Transcript</h3>
+                <div id="transcript" class="transcript"></div>
+            </div>
+            
+            <div class="nav-buttons">
+                <a href="/" class="nav-button">New Interview</a>
+                <a id="print-results" class="nav-button">Print Feedback</a>
+            </div>
+        </div>
+    </div>
+    
+    <audio id="audio-output"></audio>
+
+    <script>
+        // Store the WebRTC ID from the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const webrtc_id = urlParams.get('webrtc_id') || "{{ webrtc_id }}";
+        
+        let audioContext;
+        let analyser_input, analyser_output;
+        let dataArray_input, dataArray_output;
+        let animationId_input, animationId_output;
+        let chatHistory = [];
+        let peerConnection;
+    
+        const audioOutput = document.getElementById('audio-output');
+        const startButton = document.getElementById('start-button');
+        const finishButton = document.getElementById('finish-button');
+        const chatMessages = document.getElementById('chat-messages');
+        const resultsContainer = document.getElementById('results-container');
+        const startPrompt = document.getElementById('start-prompt');
+        
+        // Add toggle transcript button handlers
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleTranscriptBtn = document.getElementById('toggle-transcript');
+            const transcriptContainer = document.getElementById('transcript-container');
+            const printResultsBtn = document.getElementById('print-results');
+            
+            if (toggleTranscriptBtn && transcriptContainer) {
+                toggleTranscriptBtn.addEventListener('click', function() {
+                    if (transcriptContainer.style.display === 'none') {
+                        transcriptContainer.style.display = 'block';
+                        toggleTranscriptBtn.textContent = 'Hide Transcript';
+                    } else {
+                        transcriptContainer.style.display = 'none';
+                        toggleTranscriptBtn.textContent = 'Show Transcript';
+                    }
+                });
+            }
+            
+            if (printResultsBtn) {
+                printResultsBtn.addEventListener('click', function() {
+                    window.print();
+                });
+            }
+        });
+    
+        function updateButtonState() {
+            if (peerConnection && (peerConnection.connectionState === 'connecting' || peerConnection.connectionState === 'new')) {
+                startButton.innerHTML = `
+                    <div class="icon-with-spinner">
+                        <div class="spinner"></div>
+                        <span>Connecting...</span>
+                    </div>
+                `;
+                finishButton.style.display = 'none';
+            } else if (peerConnection && peerConnection.connectionState === 'connected') {
+                startButton.innerHTML = `
+                    <div class="pulse-container">
+                        <div class="pulse-circle"></div>
+                        <span>Stop</span>
+                    </div>
+                `;
+                finishButton.style.display = 'block';
+                startPrompt.style.display = 'none';
+            } else {
+                startButton.innerHTML = 'Start';
+                finishButton.style.display = 'none';
+            }
+        }
+    
+        function showError(message) {
+            const toast = document.getElementById('error-toast');
+            toast.textContent = message;
+            toast.className = 'toast error';
+            toast.style.display = 'block';
+    
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 5000);
+        }
+    
+        async function setupWebRTC() {
+            const config = {{ rtc_config|safe }};
+            peerConnection = new RTCPeerConnection(config);
+    
+            const timeoutId = setTimeout(() => {
+                const toast = document.getElementById('error-toast');
+                toast.textContent = "Connection is taking longer than usual. Are you on a VPN?";
+                toast.className = 'toast warning';
+                toast.style.display = 'block';
+    
+                setTimeout(() => {
+                    toast.style.display = 'none';
+                }, 5000);
+            }, 5000);
+    
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    audio: true
+                });
+    
+                // Set up input visualization
+                audioContext = new AudioContext();
+                analyser_input = audioContext.createAnalyser();
+                const inputSource = audioContext.createMediaStreamSource(stream);
+                inputSource.connect(analyser_input);
+                analyser_input.fftSize = 64;
+                dataArray_input = new Uint8Array(analyser_input.frequencyBinCount);
+    
+                function updateAudioLevel() {
+                    analyser_input.getByteFrequencyData(dataArray_input);
+                    const average = Array.from(dataArray_input).reduce((a, b) => a + b, 0) / dataArray_input.length;
+                    const audioLevel = average / 255;
+    
+                    const pulseCircle = document.querySelector('.pulse-circle');
+                    if (pulseCircle) {
+                        pulseCircle.style.setProperty('--audio-level', 1 + audioLevel);
+                    }
+    
+                    animationId_input = requestAnimationFrame(updateAudioLevel);
+                }
+                updateAudioLevel();
+    
+                stream.getTracks().forEach(track => {
+                    peerConnection.addTrack(track, stream);
+                });
+    
+                // Add connection state change listener
+                peerConnection.addEventListener('connectionstatechange', () => {
+                    console.log('Connection state:', peerConnection.connectionState);
+                    if (peerConnection.connectionState === 'connected') {
+                        clearTimeout(timeoutId);
+                        const toast = document.getElementById('error-toast');
+                        toast.style.display = 'none';
+                    }
+                    updateButtonState();
+                });
+    
+                // Handle incoming audio
+                peerConnection.addEventListener('track', (evt) => {
+                    if (audioOutput.srcObject !== evt.streams[0]) {
+                        audioOutput.srcObject = evt.streams[0];
+                        audioOutput.play();
+    
+                        // Set up output visualization
+                        analyser_output = audioContext.createAnalyser();
+                        const outputSource = audioContext.createMediaStreamSource(evt.streams[0]);
+                        outputSource.connect(analyser_output);
+                        analyser_output.fftSize = 2048;
+                        dataArray_output = new Uint8Array(analyser_output.frequencyBinCount);
+                        updateVisualization();
+                    }
+                });
+    
+                // Create data channel for messages
+                const dataChannel = peerConnection.createDataChannel('text');
+                dataChannel.onmessage = (event) => {
+                    const eventJson = JSON.parse(event.data);
+                    const typingIndicator = document.getElementById('typing-indicator');
+    
+                    if (eventJson.type === "error") {
+                        showError(eventJson.message);
+                    } else if (eventJson.type === "send_input") {
+                        fetch('/input_hook', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                webrtc_id: webrtc_id,
+                                chatbot: chatHistory
+                            })
+                        });
+                    } else if (eventJson.type === "log") {
+                        if (eventJson.data === "pause_detected") {
+                            typingIndicator.style.display = 'block';
+                            chatMessages.scrollTop = chatMessages.scrollHeight;
+                        } else if (eventJson.data === "response_starting") {
+                            typingIndicator.style.display = 'none';
+                        }
+                    }
+                };
+    
+                // Create and send offer
+                const offer = await peerConnection.createOffer();
+                await peerConnection.setLocalDescription(offer);
+    
+                await new Promise((resolve) => {
+                    if (peerConnection.iceGatheringState === "complete") {
+                        resolve();
+                    } else {
+                        const checkState = () => {
+                            if (peerConnection.iceGatheringState === "complete") {
+                                peerConnection.removeEventListener("icegatheringstatechange", checkState);
+                                resolve();
+                            }
+                        };
+                        peerConnection.addEventListener("icegatheringstatechange", checkState);
+                    }
+                });
+    
+                const response = await fetch('/webrtc/offer', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        sdp: peerConnection.localDescription.sdp,
+                        type: peerConnection.localDescription.type,
+                        webrtc_id: webrtc_id
+                    })
+                });
+    
+                const serverResponse = await response.json();
+    
+                if (serverResponse.status === 'failed') {
+                    showError(serverResponse.meta.error === 'concurrency_limit_reached'
+                        ? `Too many connections. Maximum limit is ${serverResponse.meta.limit}`
+                        : serverResponse.meta.error);
+                    stop();
+                    return;
+                }
+    
+                await peerConnection.setRemoteDescription(serverResponse);
+    
+                // Start visualization
+                updateVisualization();
+    
+                // create event stream to receive messages from /output
+                const eventSource = new EventSource('/outputs?webrtc_id=' + webrtc_id);
+                eventSource.addEventListener("output", (event) => {
+                    const eventJson = JSON.parse(event.data);
+                    addMessage(eventJson.role, eventJson.content);
+                });
+            } catch (err) {
+                clearTimeout(timeoutId);
+                console.error('Error setting up WebRTC:', err);
+                showError('Failed to establish connection. Please try again.');
+                stop();
+            }
+        }
+    
+        function addMessage(role, content) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', role);
+            messageDiv.textContent = content;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            chatHistory.push({ role, content });
+        }
+    
+        // Add this after other const declarations
+        const boxContainer = document.querySelector('.box-container');
+        const numBars = 32;
+        for (let i = 0; i < numBars; i++) {
+            const box = document.createElement('div');
+            box.className = 'box';
+            boxContainer.appendChild(box);
+        }
+    
+        // Replace the draw function with updateVisualization
+        function updateVisualization() {
+            animationId_output = requestAnimationFrame(updateVisualization);
+    
+            if (!analyser_output) return;
+            
+            analyser_output.getByteFrequencyData(dataArray_output);
+            const bars = document.querySelectorAll('.box');
+    
+            for (let i = 0; i < bars.length; i++) {
+                const barHeight = (dataArray_output[i] / 255) * 2;
+                bars[i].style.transform = `scaleY(${Math.max(0.1, barHeight)})`;
+            }
+        }
+    
+        function stop() {
+            if (peerConnection) {
+                if (peerConnection.getTransceivers) {
+                    peerConnection.getTransceivers().forEach(transceiver => {
+                        if (transceiver.stop) {
+                            transceiver.stop();
+                        }
+                    });
+                }
+    
+                if (peerConnection.getSenders) {
+                    peerConnection.getSenders().forEach(sender => {
+                        if (sender.track && sender.track.stop) sender.track.stop();
+                    });
+                }
+    
+                peerConnection.close();
+            }
+    
+            if (animationId_input) {
+                cancelAnimationFrame(animationId_input);
+            }
+            if (animationId_output) {
+                cancelAnimationFrame(animationId_output);
+            }
+            if (audioContext) {
+                audioContext.close();
+            }
+    
+            updateButtonState();
+        }
+    
+        async function finishInterview() {
+            if (!confirm("Are you sure you want to end this interview?")) {
+                return;
+            }
+            
+            // Stop the WebRTC connection
+            stop();
+            
+            // Hide the chat container and controls
+            document.querySelector('.chat-container').style.display = 'none';
+            document.querySelector('.controls-container').style.display = 'none';
+            
+            // Show loading state
+            resultsContainer.style.display = 'block';
+            document.getElementById('score-value').textContent = '...';
+            document.getElementById('detailed-feedback').innerHTML = '<p>Analyzing your interview performance, please wait...</p>';
+            document.getElementById('transcript').textContent = 'Loading transcript...';
+            
+            try {
+                // Fetch the score, detailed feedback, and transcript
+                const response = await fetch(`/score?webrtc_id=${webrtc_id}`);
+                const data = await response.json();
+                
+                // Update the UI with the results
+                document.getElementById('score-value').textContent = data.score;
+                document.getElementById('transcript').textContent = data.transcript;
+                
+                // Render the detailed feedback if available
+                if (data.feedback) {
+                    renderDetailedFeedback(data.feedback);
+                }
+            } catch (error) {
+                console.error('Error fetching results:', error);
+                document.getElementById('score-value').textContent = 'Error';
+                document.getElementById('detailed-feedback').innerHTML = '<p>An error occurred while analyzing your interview.</p>';
+                document.getElementById('transcript').textContent = 'An error occurred while fetching the transcript.';
+            }
+        }
+        
+        // Function to render detailed feedback for job interviews
+        function renderDetailedFeedback(feedback) {
+            const detailedFeedbackDiv = document.getElementById('detailed-feedback');
+            
+            // Create summary section
+            let html = `
+                <div class="feedback-summary">
+                    <h3>Interview Assessment: ${feedback.score}/10</h3>
+                    <p>${feedback.summary}</p>
+                </div>
+            `;
+            
+            // Create strengths section
+            html += `
+                <div class="feedback-strengths">
+                    <h4>What You Did Well</h4>
+                    <ul>
+            `;
+            
+            feedback.strengths.forEach(strength => {
+                html += `<li>${strength}</li>`;
+            });
+            
+            html += `
+                    </ul>
+                </div>
+            `;
+            
+            // Create areas for improvement section
+            html += `
+                <div class="feedback-areas">
+                    <h4>Areas for Improvement</h4>
+            `;
+            
+            // Introduction and first impression
+            html += `
+                    <div class="feedback-area">
+                        <h5>Introduction and First Impression</h5>
+                        <ul>
+            `;
+            
+            feedback.areas_for_improvement.introduction.forEach(item => {
+                html += `<li>${item}</li>`;
+            });
+            
+            html += `
+                        </ul>
+                    </div>
+            `;
+            
+            // Response quality
+            html += `
+                    <div class="feedback-area">
+                        <h5>Response Quality and Structure</h5>
+                        <ul>
+            `;
+            
+            feedback.areas_for_improvement.response_quality.forEach(item => {
+                html += `<li>${item}</li>`;
+            });
+            
+            html += `
+                        </ul>
+                    </div>
+            `;
+            
+            // Technical knowledge
+            html += `
+                    <div class="feedback-area">
+                        <h5>Technical Knowledge Demonstration</h5>
+                        <ul>
+            `;
+            
+            feedback.areas_for_improvement.technical_knowledge.forEach(item => {
+                html += `<li>${item}</li>`;
+            });
+            
+            html += `
+                        </ul>
+                    </div>
+            `;
+            
+            // Communication
+            html += `
+                    <div class="feedback-area">
+                        <h5>Soft Skills and Communication</h5>
+                        <ul>
+            `;
+            
+            feedback.areas_for_improvement.communication.forEach(item => {
+                html += `<li>${item}</li>`;
+            });
+            
+            html += `
+                        </ul>
+                    </div>
+            `;
+            
+            // Questions to interviewer
+            html += `
+                    <div class="feedback-area">
+                        <h5>Questions Asked to Interviewer</h5>
+                        <ul>
+            `;
+            
+            feedback.areas_for_improvement.questions_to_interviewer.forEach(item => {
+                html += `<li>${item}</li>`;
+            });
+            
+            html += `
+                        </ul>
+                    </div>
+                </div>
+            `;
+            
+            // Recommendations
+            html += `
+                <div class="feedback-recommendations">
+                    <h4>Recommendations for Future Interviews</h4>
+                    <ul>
+            `;
+            
+            feedback.recommendations.forEach(recommendation => {
+                html += `<li>${recommendation}</li>`;
+            });
+            
+            html += `
+                    </ul>
+                </div>
+            `;
+            
+            detailedFeedbackDiv.innerHTML = html;
+        }
+    
+        startButton.addEventListener('click', () => {
+            if (startButton.textContent === 'Start') {
+                setupWebRTC();
+            } else {
+                stop();
+            }
+        });
+        
+        finishButton.addEventListener('click', finishInterview);
+    </script>
+</body>
+
+</html>
