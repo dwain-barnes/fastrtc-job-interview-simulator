@@ -42,9 +42,7 @@ Job Interview Simulator uses WebRTC for real-time voice communication and AI lan
 3. **Interview** - Engage in a voice conversation with the AI interviewer
 4. **Feedback** - Receive detailed assessment and actionable improvement recommendations
 
-<p align="center">
-  <img src="https://placeholder-for-workflow.com/workflow-diagram.png" alt="Workflow Diagram" width="600"/>
-</p>
+
 
 ## Installation
 
