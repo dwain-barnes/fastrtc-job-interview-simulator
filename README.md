@@ -10,7 +10,6 @@
 
 <p align="center">
   <a href="#features">Features</a> •
-  <a href="#demo">Demo</a> •
   <a href="#how-it-works">How It Works</a> •
   <a href="#installation">Installation</a> •
   <a href="#usage">Usage</a> •
@@ -32,11 +31,7 @@
 - 🧠 **Adaptive questioning** - Interviewer responds based on your answers
 - 📝 **Interview transcripts** - Review the full conversation afterward
 
-## Demo
 
-![Demo GIF](https://placeholder-for-demo.com/job-interview-simulator-demo.gif)
-
-👉 [Try the live demo](https://your-demo-url.com) (if available)
 
 ## How It Works
 
@@ -55,15 +50,13 @@ Job Interview Simulator uses WebRTC for real-time voice communication and AI lan
 
 ### Prerequisites
 
-- Python 3.9+
-- Node.js 14+ (for frontend development)
-- FFmpeg (for audio processing)
+- Python 3.10+
 
 ### Clone and Install
 
 ```bash
 # Clone the repository
-git clone https://github.com/username/job-interview-simulator.git
+git clone https://github.com/dwain-barnes/fastrtc-job-interview-simulator.git
 cd job-interview-simulator
 
 # Create and activate virtual environment
@@ -99,8 +92,8 @@ TTS_VOICE=en-US-neural2-J
 TTS_BACKEND=standard
 TTS_AUDIO_FORMAT=mp3
 
-# Application mode (UI, API, or PHONE)
-MODE=UI
+
+MODE=WEB
 ```
 
 ## Usage
@@ -154,7 +147,7 @@ The application will be available at `http://localhost:7860`
 
 - **Backend**: FastAPI, Python
 - **Voice Processing**: WebRTC, SileroVAD
-- **AI/ML**: OpenAI, Custom prompt engineering
+- **AI/ML**: OpenAI, Custom prompt engineering, Ollama
 - **Frontend**: HTML/CSS/JavaScript
 - **Audio**: Speech-to-Text and Text-to-Speech APIs
 
@@ -192,9 +185,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Acknowledgments
 
-- [FastAPI](https://fastapi.tiangolo.com/) for the web framework
-- [OpenAI](https://openai.com/) for the language model capabilities
-- [WebRTC](https://webrtc.org/) for real-time communication
+- [FastRTC](https://huggingface.co/fastrtc) for real-time communicatio
 
 ---
 
